@@ -43,5 +43,8 @@
         "<header1>": "header1", 
         "<header2>": "header2", 
         "<header3>": "header3"
+    }, 
+    "suffix": {
+        "genPBS": ".pbs"
     }
 }
