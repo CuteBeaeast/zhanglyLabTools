@@ -64,9 +64,9 @@ def main():
         for i in range(num_jobs):
             arg_dict = {key: value[i] for key,value in arg_list_dict.items()}
 
-            with open(os.path.join(args.opath, arg_dict['job_name'] + '.pbs'), 'w') as f:
+            with open(os.path.join(args.opath, arg_dict['job_name'] + settings['suffix'][args.subcommand.__str__()]), 'w') as f:
                 f.write(generator.render(arg_dict))
     else:
-        with open(os.path.join(args.opath, args.job_name + '.pbs'), 'w') as f:
+        with open(os.path.join(args.opath, args.job_name + settings['suffix'][args.subcommand.__str__()]), 'w') as f:
             f.write(generator.render(args.__dict__))
 
