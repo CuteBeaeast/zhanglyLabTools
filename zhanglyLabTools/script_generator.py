@@ -10,19 +10,19 @@ class script_generator_settings:
         self.__flags = dict()
         self.__helps = dict()
 
-    def add_setting_key(self, key, setting_str, default, flag, help_str):
+    def add_setting_key(self, key, default, flag, help_str):
         '''
         Add one setting key to the setting object
         '''
         self.__keys.append(key)
-        self.__setting_strs[key] = setting_str
+        # self.__setting_strs[key] = setting_str
         self.__defaults[key] = default
         self.__flags[key] = flag
         self.__helps[key] = help_str
     
-    def load_from_dict(self, setting_dict):
+    def load_variables_from_dict(self, setting_dict):
         '''
-        load settings from json str
+        load variable settings from dictonary
 
         Keyword Arguments:
         setting_dict - dictionary containing keys as key names, and 
@@ -31,14 +31,25 @@ class script_generator_settings:
 
         >>> sample_setting = script_generator_settings('sampleGenerator')
         >>> sample_dict = {'sample_setting': {'setting_str': 'setting: <setting>', 'default': 1, 'flag': '-s', 'help': 'help'}}
-        >>> sample_setting.load_from_dict(sample_dict)
-        >>> sample_setting.get_setting_str('sample_setting')
-        'setting: <setting>'
+        >>> sample_setting.load_variables_from_dict(sample_dict)
         >>> sample_setting.get_default('sample_setting')
         1
         '''
         for key, value in setting_dict.items():
-            self.add_setting_key(key, value['setting_str'], value['default'], value['flag'], value['help'])
+            self.add_setting_key(key, value['default'], value['flag'], value['help'])
+    
+    def load_setting_strs_from_dict(self, setting_dict):
+        '''
+        load setting strs from dictionary object
+
+        >>> sample_setting = script_generator_settings('sampleGenerator')
+        >>> sample_dict = {'setting: <setting>': 'sample_setting'}
+        >>> sample_setting.load_setting_str_from_dict(sample_dict)
+        >>> sample_setting.get_setting_str('sample_setting')
+        'setting: <setting>'
+        '''
+        for key, value in setting_dict.items():
+            self.__setting_strs[key] = value
     
     def get_default(self, key):
         '''
@@ -49,14 +60,23 @@ class script_generator_settings:
         '''
         return self.__defaults[key]
 
-    def get_setting_str(self, key):
+    def get_setting_strs(self):
         '''
         Return the setting string of an option
 
         Keyword Arguments:
         key - the key of which the setting string is returned
         '''
-        return self.__setting_strs[key]
+        return list(self.__setting_strs.keys())
+    
+    def get_key_for_setting_str(self, setting_str):
+        '''
+        Return the name of key corresponding to setting str
+
+        Keyword Arguments:
+        setting_str - the setting string of which the key is returned
+        '''
+        return self.__setting_strs[setting_str]
     
     def get_help(self,key):
         '''
@@ -126,7 +146,8 @@ class script_generator:
         Keyword Arguments:
         setting_dict - a python dictionary containing necessary settings
         '''
-        self.__settings.load_from_dict(setting_dict)
+        self.__settings.load_variables_from_dict(setting_dict['variables'])
+        self.__settings.load_setting_strs_from_dict(setting_dict['setting_str'])
     
     def render(self, arg_dict):
         '''
@@ -138,8 +159,8 @@ class script_generator:
         code.add_line('')
         body_block = code.add_block()
 
-        for key in self.__settings.get_keys():
-            header_block.add_line(self.__settings.get_setting_str(key).replace('<setting>', arg_dict[key].__str__()))
+        for key in self.__settings.get_setting_strs():
+            header_block.add_line(key.replace('<setting>', arg_dict[self.__settings.get_key_for_setting_str(key)].__str__()))
 
         template = self.template
 

@@ -1,0 +1,99 @@
+{
+    "script_generators": {
+        "genPBS": {
+            "variables": {
+                "job_name": {
+                    "default": "the_one_job",
+                    "flag": "-N", 
+                    "help": "name of the job"
+                },
+                "num_cores":{
+                    "default": "1:centos6", 
+                    "flag": "--ppn", 
+                    "help": "number of cores for the program to ran on"
+                }, 
+                "time": {
+                    "default": 24, 
+                    "flag": "-t", 
+                    "help": "estimated time limit"
+                }, 
+                "memory": {
+                    "default": "16G",
+                    "flag": "-mem", 
+                    "help": "estimated memory usage"
+                }, 
+                "shell": {
+                    "default": "/bin/bash", 
+                    "flag": "-S", 
+                    "help": "Which shell the script will run on"
+                }, 
+                "queue":{
+                    "default": "slst_zhangly", 
+                    "flag": "-q", 
+                    "help": "queue for the job to run on"
+                }
+            }, 
+            "setting_str": {
+                "#PBS -N <setting>": "job_name", 
+                "#PBS -l nodes=1:ppn=<setting>": "num_cores", 
+                "#PBS -l walltime=<setting>:00:00": "time", 
+                "#PBS -l mem=<setting>": "memory", 
+                "#PBS -S <setting>": "shell", 
+                "#PBS -q <setting>": "queue" 
+            }
+        }, 
+        "slurm": {
+            "variables": {
+                "interpreter": {
+                    "default": "/bin/bash",
+                    "flag": "-S",
+                    "help": "Interpreter to run the script"
+                },
+                "job_name": {
+                    "default": "the_one_job",
+                    "flag": "-N",
+                    "help": "name of the job[the_one_job]"
+                },
+                "num_nodes": {
+                    "default": "1",
+                    "flag": "--nodes",
+                    "help": "number of nodes for the program to ran on"
+                },
+                "num_cores": {
+                    "default": "1",
+                    "flag": "--ppn",
+                    "help": "number of cores for the program to ran on"
+                },
+                "time": {
+                    "default": 4,
+                    "flag": "-t",
+                    "help": "estimated time limit"
+                },
+                "queue":{
+                    "default": "CPU",
+                    "flag": "-q",
+                    "help": "queue for the job to run on"
+                }
+            }, 
+            "setting_str": {
+                "#!<setting>": "interpreter", 
+                "#SBATCH --job-name=<setting>": "job_name",
+                "#SBATCH -N <setting>": "num_nodes",
+                "#SBATCH --ntasks-per-node=<setting>": "num_cores",
+                "#SBATCH --time=<setting>:00:00": "time",
+                "#SBATCH -p <setting>": "queue", 
+                "#SBATCH -output=<setting>.out": "job_name", 
+                "#SBATCH -error=<setting>.err": "job_name"
+            }
+        }
+    }, 
+    "templates": {
+        "<header1>": "header1", 
+        "<header2>": "header2", 
+        "<header3>": "header3"
+    }, 
+    "suffix": {
+        "genPBS": ".pbs", 
+        "slurm": ".slurm"
+    }
+}
