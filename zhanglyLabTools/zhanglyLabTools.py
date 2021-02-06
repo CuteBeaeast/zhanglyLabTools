@@ -1,4 +1,5 @@
 from zhanglyLabTools import script_generator
+from zhanglyLabTools.exceptions import cli_input_error
 from pathlib import Path
 import argparse
 import json
@@ -58,6 +59,10 @@ def main():
                 if value.__str__()[-5:] == '.list':
                     with open(value, 'r') as f:
                         arg_list_dict[key] = [s.replace('\n', '') for s in f.readlines()]
+                    # make sure lists are of the same length
+                    # if not, raise error
+                    if len(arg_list_dict[key]) != num_jobs:
+                        raise cli_input_error("lists' length not match")
                 else:
                     arg_list_dict[key] = [value] * num_jobs
 
